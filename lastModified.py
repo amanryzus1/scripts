@@ -8,9 +8,10 @@ from robot.api.deco import keyword, library
 class lastModified(object):
 
     @keyword
-    def last_modified(self,path):
+    def lastModified(self,path):
         files = os.listdir(path)
         paths = [os.path.join(path, basename) for basename in files]
-        fname = (max(paths, key=os.path.getctime))
-        b = fname.replace(path, '')
-        return b
+        file_name = (max(paths, key=os.path.getctime))
+        #removing full path and keeping only the name  
+        lastModifedFileName = file_name.replace(path, '')
+        return lastModifedFileName
