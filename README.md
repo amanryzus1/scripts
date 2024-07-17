@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains various scripts and tools to manage and automate tasks related to Nagios, Selenium, and Kubernetes.
+This repository contains various scripts written by me for automation tasks related to Nagios, Selenium, and Kubernetes.
 
 ## Files
 
