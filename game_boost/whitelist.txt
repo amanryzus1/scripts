@@ -1,0 +1,4 @@
+Spider-Man2.exe
+Steam.exe
+Explorer.exe
+Discord.exe
