@@ -1,6 +1,7 @@
 // GameBooster - Real-time process killer for better gaming performance
 // Author: Anshuman
 // Purpose: Keep your game(s) running smooth by killing resource-hungry background processes
+// build - go build -o gamebooster.exe main.go
 package main
 
 import (
