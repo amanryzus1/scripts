@@ -1,35 +1,106 @@
-# Project README
+# Interview Transcription Project
 
-## Overview
+Complete pipeline to convert video/audio interviews to text using OpenAI Whisper.
 
-This repository contains various scripts written by me for automation tasks related to Nagios, Selenium, and Kubernetes.
+**Pipeline**: Video (MP4/MKV) → Audio (MP3) → Text (TXT)
 
 ## Files
 
-### 1. `check_nagios_status.sh`
-- **Description**: A script to debug and heal Nagios services.
-- **Usage**: Run this script to check the status of Nagios services and attempt to automatically resolve any detected issues.
+- **video-to-audio.sh** - Bash script to convert video to MP3 using ffmpeg
+- **transcribe.py** - Original Python script (hardcoded paths)
+- **transcribe-flexible.py** - Flexible Python script with command-line arguments
 
-
-### 2. `lastModified.py`
-- **Description**: A Selenium custom library for finding out the last modified file in a specified directory.
-- **Usage**: Use this script to integrate with Selenium and identify the most recently modified file in a target directory.
-
-
-### 3. `replace_ssl_certs.sh`
-- **Description**: An additional script for the Nagios script to replace SSL certificates.
-- **Usage**: Execute this script to update or replace SSL certificates used by Nagios.
-
-
-### 4. `setup_k8.sh`
-- **Description**: A script to set up Kubernetes.
-- **Usage**: Run this script to set up a Kubernetes environment.
-
-
-## Getting Started
-
-To use these scripts, clone the repository and navigate to the respective script directory. Ensure you have the necessary permissions and dependencies installed.
+## Prerequisites
 
 ```bash
-git clone <repository_url>
-cd <repository_directory>
+pip3 install openai-whisper
+# For video to audio conversion
+sudo apt-get install ffmpeg  # or brew install ffmpeg on Mac
+```
+
+## Usage
+
+### Complete Pipeline (Video → Audio → Text)
+
+#### Step 1: Convert Video to Audio
+
+```bash
+./video-to-audio.sh interview.mkv
+# Output: interview.mp3
+```
+
+Or with custom output name:
+```bash
+./video-to-audio.sh recording.mp4 output.mp3
+```
+
+#### Step 2: Transcribe Audio to Text
+
+**Option A: Flexible script (recommended)**
+```bash
+# Auto-generate output filename
+python3 transcribe-flexible.py interview.mp3
+
+# Specify output file
+python3 transcribe-flexible.py interview.mp3 transcript.txt
+
+# Use different model size
+python3 transcribe-flexible.py interview.mp3 transcript.txt small
+```
+
+**Option B: Original script (edit file paths first)**
+```bash
+# Edit paths in transcribe.py, then:
+python3 transcribe.py
+```
+
+### Quick Example
+```bash
+# Complete pipeline for interview.mkv
+./video-to-audio.sh interview.mkv
+python3 transcribe-flexible.py interview.mp3
+# Result: interview.txt
+```
+
+## Whisper Model Options
+
+The script uses `base` model by default. Available models:
+
+- `tiny` - Fastest, least accurate (~1GB RAM)
+- `base` - Fast, good accuracy (~1GB RAM)
+- `small` - Better accuracy (~2GB RAM)
+- `medium` - High accuracy (~5GB RAM)
+- `large` - Best accuracy (~10GB RAM)
+
+Change the model in transcribe.py:
+```python
+model = whisper.load_model("base")  # Change to "small", "medium", etc.
+```
+
+## Example Pipeline
+
+Real example from sdevraku interview:
+```bash
+# Step 1: Convert video to audio
+./video-to-audio.sh sdevraku.mkv
+# sdevraku.mkv (274MB) → sdevraku.mp3 (26MB)
+
+# Step 2: Transcribe to text
+python3 transcribe-flexible.py sdevraku.mp3
+# sdevraku.mp3 (26MB) → sdevraku.txt (30KB)
+```
+
+Result: Complete interview transcript ready for analysis!
+
+## Features
+
+- Automatic Whisper installation if not present
+- Language detection
+- UTF-8 encoding support
+- Verbose output during transcription
+
+## Notes
+
+- Larger models are more accurate but slower and require more memory
+- Processing time depends on audio length and model size
+- Works with multiple audio formats: mp3, wav, m4a, flac, etc.
